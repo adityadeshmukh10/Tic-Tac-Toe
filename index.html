@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: aquamarine;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Fixed spelling of "center" */
+        }
+
+        .game {
+            height: 60vmin;
+            width: 60vmin;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            /* Fixed spelling of "center" */
+            gap: 1.5vmin;
+        }
+
+        .box {
+            height: 18vmin;
+            width: 18vmin;
+            border-radius: 2px;
+            border: none;
+            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+            font-size: 8vmin;
+            color: brown;
+            cursor: pointer;
+        }
+
+        #reset-btn {
+            padding: 1rem;
+            font-size: 1.5rem;
+            background-color: black;
+            color: aliceblue;
+            border-radius: 2px;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+        #winner-display {
+            font-size: 2rem;
+            margin-top: 1rem;
+            color: darkgreen;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Tic-Tac-Toe</h1>
+        <div class="container">
+            <div class="game">
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+            </div>
+        </div>
+        <div id="winner-display"></div> <!-- New element to display the winner -->
+        <button id="reset-btn">Reset Button</button>
+    </main>
+
+    <script>
+        let boxes = document.querySelectorAll('.box'); // Select all elements with the class "box"
+            let resetbtn = document.querySelector("#reset-btn");
+            let winnerDisplay = document.querySelector("#winner-display"); // Select the winner display element
+
+            let turnO = true;
+
+            const winpatterns = [
+                [0, 1, 2],
+                [0, 3, 6],
+                [0, 4, 8],
+                [1, 4, 7],
+                [2, 5, 8],
+                [2, 4, 6],
+                [3, 4, 5],
+                [6, 7, 8]
+            ];
+
+            boxes.forEach((box, index) => {
+                box.addEventListener('click', () => {
+                    if (box.innerText === "") { // Check if the box is empty
+                        box.innerText = turnO ? "O" : "X";
+                        turnO = !turnO; // Switch turn
+                        checkwinner(); // Check if there's a winner after each move
+                    }
+                });
+            });
+
+            const checkwinner = () => {
+                for (let pattern of winpatterns) {
+                    let pos1val = boxes[pattern[0]].innerText;
+                    let pos2val = boxes[pattern[1]].innerText;
+                    let pos3val = boxes[pattern[2]].innerText;
+
+                    if (pos1val !== "" && pos2val !== "" && pos3val !== "") {
+                        if (pos1val === pos2val && pos2val === pos3val) {
+                            winnerDisplay.innerText = `Winner: ${pos1val}`; // Display the winner
+                            disableBoxes(); // Disable further moves
+                            return;
+                        }
+                    }
+                }
+
+                // Check for a draw
+                const allFilled = Array.from(boxes).every(box => box.innerText !== "");
+                if (allFilled) {
+                    winnerDisplay.innerText = "It's a Draw!";
+                    disableBoxes(); // Disable further moves
+                }
+            }
+
+            const disableBoxes = () => {
+                boxes.forEach((box) => {
+                    box.disabled = true;
+                });
+            }
+
+            resetbtn.addEventListener('click', () => {
+                boxes.forEach((box) => {
+                    box.innerText = "";
+                    box.disabled = false;
+                });
+                winnerDisplay.innerText = ""; // Clear the winner display
+                turnO = true;
+            });
+
+    </script>
+</body>
+
+</html>
